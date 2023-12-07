@@ -8,7 +8,6 @@ Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 IHSetUtils = "2fbe2ced-d81f-41b4-8f59-9b074fb3e7ff"
 NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
-SciPy = "ebc72ef8-9537-4fb0-b64e-ac76025fed2d"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]

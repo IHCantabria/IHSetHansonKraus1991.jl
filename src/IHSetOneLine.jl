@@ -5,7 +5,6 @@ using NCDatasets
 using Dates
 using IHSetUtils
 using Printf
-using SciPy
 export run_OneLine
 include("OneLine.jl")
 

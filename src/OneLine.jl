@@ -9,7 +9,7 @@
     # wavec : wave climate at breaking during the new time step and 2 previous conditions
     #   hb  : wave height at breaking
     #   tb  : wave period at breaking
-    #   dirb: wave direction at breaking
+    #   θb: wave direction at breaking
     #   depthb  : breaking depth
     #   surge: storm surge
     #   tide: astronomical tide
@@ -43,12 +43,12 @@
 
     #    hs = wavec.hs
     #    tp = wavec.tp
-    #    dire = wavec.dir
+    #    θe = wavec.dir
     #    depth = wavec.depth
 
     #    hb = wavec.hb
     #    tb = wavec.tb
-    #    dirb = wavec.dirb
+    #    θb = wavec.dirb
     #    depthb = wavec.depthb
 
     #    surge = wavec.ss
@@ -62,17 +62,14 @@
 #
 
 function run_OneLine()
+    
     println("Loading libraries...")
     wrkDir = pwd()
-    mods = wrkDir[1:end-3]*"Modules\\"
-    dats = wrkDir[1:end-3]*"Data\\"
+    mods = wrkDir*"Modules\\"
+    dats = wrkDir*"Data\\"
 
     # mods = wrkDir*"\\Modules\\"
     # dats = wrkDir*"\\Data\\"
-
-    include(mods*"Cocooned.jl")
-    include(mods*"Geom.jl")
-
 
     println("Loading datasets...")
 
@@ -85,18 +82,18 @@ function run_OneLine()
     println("Unpacking datasets...")
 
     dt, dx, bctype, Ndata,  NS = configF["dt"][:][1], configF["dx"][:][1], configF["bctype"][1], configF["Ndata"][:], configF["NS"][:]
-    kal = collect(skipmissing(configF["kal"][:]))
+    
+    kal = collect(skipmissing(parF["kal"][:]))
 
     Y0 = collect(skipmissing(trsF["Y0"][:]))
     X0 = collect(skipmissing(trsF["X0"][:]))
     Yf = collect(skipmissing(trsF["Yf"][:]))
     Xf = collect(skipmissing(trsF["Xf"][:]))
     phi = collect(skipmissing(trsF["phi"][:]))
-    relPhi = collect(skipmissing(trsF["relPhi"][:]))
 
     Hs = collect(skipmissing(wavF["hs"][:]))
     Tp = collect(skipmissing(wavF["tp"][:]))
-    dir = collect(skipmissing(wavF["dir"][:]))
+    θ = collect(skipmissing(wavF["dir"][:]))
     depth = collect(skipmissing(wavF["depth"][:]))
     doc = collect(skipmissing(wavF["doc"][:]))
 
@@ -114,7 +111,7 @@ function run_OneLine()
 
     Hs = convert(Array{Float64},transpose(reshape(Hs, (m, n))))
     Tp = convert(Array{Float64},transpose(reshape(Tp, (m, n))))
-    dir = convert(Array{Float64},transpose(reshape(dir, (m, n))))
+    θ = convert(Array{Float64},transpose(reshape(θ, (m, n))))
     doc = convert(Array{Float64},transpose(reshape(doc, (m, n))))
 
     yi = convert(Array{Float64},yi)
@@ -123,8 +120,8 @@ function run_OneLine()
 
     println("Starting COCOONED - Longshore Only...")
 
-    y_tot, q, hb, depthb, dirb, q0 = COCOONED_L(yi, dt, dx, Hs, Tp, dir, depth, 
-                                            doc, kal, X0, Y0, phi, bctype, relPhi)
+    y_tot, q, hb, depthb, θb, q0 = OneLine(yi, dt, dx, Hs, Tp, θ, depth, 
+                                            doc, kal, X0, Y0, phi, bctype)
 
     # cd("..")
     # cd("Results")
@@ -138,6 +135,7 @@ function run_OneLine()
     #     # get the new positions
 
     XN,YN = abs_pos(X0,Y0,deg2rad.(phi),yi)
+    return XN, YN, y_tot, q
 end
 
 ############################################################################################
@@ -148,7 +146,7 @@ end
 #################One-line#################One-line#################One-line#################
 ############################################################################################
 
-function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, dir::Matrix{Float64}, depth, doc::Matrix{Float64}, kal, X0, Y0, phi, bctype)
+function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, θ::Matrix{Float64}, depth, doc::Matrix{Float64}, kal, X0, Y0, phi, bctype)
 
     nti = size(hs,2)
     # nti = 1000
@@ -165,7 +163,7 @@ function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, dir::Matr
     # sedbgtal = zeros((n1, mt))
     # dQdx = zeros((n1, mt))
     hb = convert(Array{Float64},zeros(n2, mt))
-    dirb = convert(Array{Float64},zeros(n2, mt))
+    θb = convert(Array{Float64},zeros(n2, mt))
     depthb = convert(Array{Float64},zeros(n2, mt))
     q = convert(Array{Float64},zeros(n2, mt))
     q0 = convert(Array{Float64},zeros(n2, mt))
@@ -177,15 +175,15 @@ function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, dir::Matr
         p1=ti-desl
         p2=ti+desl
 
-        ynew, hb[:,ti],dirb[:,ti],depthb[:,ti],
+        ynew, hb[:,ti],θb[:,ti],depthb[:,ti],
             q[:,ti], q0[:,ti] = ydir_L(ysol[:,ti-1],dt,dx,tii,hs[:,p1:p2],
-            tp[:,p1:p2],dir[:,p1:p2],depth,hb[:,p1:p2],
-            dirb[:,p1:p2],depthb[:,p1:p2],q[:,p1:p2],
+            tp[:,p1:p2],θ[:,p1:p2],depth,hb[:,p1:p2],
+            θb[:,p1:p2],depthb[:,p1:p2],q[:,p1:p2],
             doc[:,p1:p2],kal, X0, Y0, phi, bctype)
 
         # resFun(x) = residualL(x,ysol[:,ti-1],dt,dx,tii,hs[:,p1:p2],
-        # tp[:,p1:p2],dir[:,p1:p2],depth,hb[:,p1:p2],
-        # dirb[:,p1:p2],depthb[:,p1:p2],q[:,p1:p2],
+        # tp[:,p1:p2],θ[:,p1:p2],depth,hb[:,p1:p2],
+        # θb[:,p1:p2],depthb[:,p1:p2],q[:,p1:p2],
         # doc[:,p1:p2],kal, X0, Y0, phi,theta)
 
         # ynew = optimize.newton_krylov(resFun, ysol[:,ti-1] ; method="minres")
@@ -201,35 +199,35 @@ function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, dir::Matr
         p1=p1+1
         p2=p2+1
 
-        # hb[:,ti],dirb[:,ti],depthb[:,ti], q[:,ti], sedbgtal[:,ti],
+        # hb[:,ti],θb[:,ti],depthb[:,ti], q[:,ti], sedbgtal[:,ti],
         # dQdx[:,ti]= residualL_vol(ysol[:,ti],ysol[:,ti-1],dt,
-        # dx,tii,hs[:,p1:p2],tp[:,p1:p2],dir[:,p1:p2],depth,hb[:,p1:p2],dirb[:,p1:p2],
+        # dx,tii,hs[:,p1:p2],tp[:,p1:p2],θ[:,p1:p2],depth,hb[:,p1:p2],θb[:,p1:p2],
         # depthb[:,p1:p2],q[:,p1:p2],doc[:,p1:p2],kal, X0, Y0, phi,theta)
 
         if pos % 100 == 0
             @printf("\n Progress of %.2f %%",pos/(nti-1) .* 100)
         end
         # println(pos)
-    #     #    res[pos+1,:], WAVEC.hb[pos+1,:], WAVEC.dirb[pos+1,:], WAVEC.depthb[pos+1,:], q[pos+1,:], yeq[pos+1,:], CALP.AY0[pos+1,:], sedbgt[pos+1,:], sedbgtal[pos+1,:], sedbgtcr[pos+1,:], sedbgtbc[pos+1,:] = residual(ynew,y,dt,dx,pos+1,WAVEC,q,yeq,CNST,CALP,TRS,BDC,model,theta)
+    #     #    res[pos+1,:], WAVEC.hb[pos+1,:], WAVEC.θb[pos+1,:], WAVEC.depthb[pos+1,:], q[pos+1,:], yeq[pos+1,:], CALP.AY0[pos+1,:], sedbgt[pos+1,:], sedbgtal[pos+1,:], sedbgtcr[pos+1,:], sedbgtbc[pos+1,:] = residual(ynew,y,dt,dx,pos+1,WAVEC,q,yeq,CNST,CALP,TRS,BDC,model,theta)
     #     #    yold = y    
         # tiempo_iter(pos)=toc
     end
 
-    return ysol, q, hb, depthb, dirb, q0
+    return ysol, q, hb, depthb, θb, q0
 end
 
-function ydir_L(y,dt,dx,ti,hs,tp,dire,depth,hb,dirb,depthb,q,doc,kal,X0, Y0, phi, bctype, angRel=90)
+function ydir_L(y,dt,dx,ti,hs,tp,θe,depth,hb,θb,depthb,q,doc,kal,X0, Y0, phi, bctype)
 
     XN, YN = abs_pos(X0,Y0,nauticalDir2cartesianDir(phi).*pi./180.,y)
     
     alfas = zeros(size(hs,1))
-    alfas[2:end-1] = shore_angle(XN,YN,dire[:,ti])
+    alfas[2:end-1] = shore_angle(XN,YN,θe[:,ti])
     # alfas = GM.cartesianDir2nauticalDir(alfas)
     alfas[1] = alfas[2]; alfas[end] = alfas[end-1]; # # ghost condition for the relative angle()
     
     # println(alfas)
     try
-        hb[:,ti], dirb[:,ti], depthb[:,ti] = BreakingPropagation(hs[:,ti],tp[:,ti],dire[:,ti],depth,alfas .+ angRel, "spectral")
+        hb[:,ti], θb[:,ti], depthb[:,ti] = BreakingPropagation(hs[:,ti],tp[:,ti],θe[:,ti],depth,alfas .+ 90, "spectral")
     catch
         # println("\n")
         # println(alfas .- angRel)
@@ -249,7 +247,7 @@ function ydir_L(y,dt,dx,ti,hs,tp,dire,depth,hb,dirb,depthb,q,doc,kal,X0, Y0, phi
     
     dc = 0.5.*(doc[2:end,ti-1:ti+1]+doc[1:end-1,ti-1:ti+1]); # # trapezoidal rule for the closure depth in m+1/2
 
-    q[:,ti], q0 = ALST(hb[:,ti],dirb[:,ti],depthb[:,ti],alfas.+ angRel,kal) # # for Tairua is -90 according to how the reference system was defined
+    q[:,ti], q0 = ALST(hb[:,ti], θb[:,ti], depthb[:,ti], alfas.+ 90, kal) # # for Tairua is -90 according to how the reference system was defined
     if bctype == "Dirichlet"
         q[1,ti] = 0
         q[end,ti] = 0
@@ -265,20 +263,20 @@ function ydir_L(y,dt,dx,ti,hs,tp,dire,depth,hb,dirb,depthb,q,doc,kal,X0, Y0, phi
     # println("qs=", size(q))
     # println("ysol=", size(y))
     # println("kal=", size(kal))
-    return y .- (dt*60*60) ./ dc[:,ti] .* (q[2:end,ti].-q[1:end-1,ti])./dx, hb[:,ti], dirb[:,ti], depthb[:,ti], q[:,ti], q0
+    return y .- (dt*60*60) ./ dc[:,ti] .* (q[2:end,ti].-q[1:end-1,ti])./dx, hb[:,ti], θb[:,ti], depthb[:,ti], q[:,ti], q0
 
 end
 
-function residualL(ynew,y,dt,dx,ti,hs,tp,dire,depth,hb,dirb,depthb,q,doc,kal,X0, Y0, phi,theta, bctype, algulo_rel)
+function residualL(ynew,y,dt,dx,ti,hs,tp,θe,depth,hb,θb,depthb,q,doc,kal,X0, Y0, phi,theta, bctype, algulo_rel)
 
     # println(sum(isreal.(ynew)))
     XN, YN = abs_pos(X0,Y0,nauticalDir2cartesianDir(phi).*pi./180.,ynew)
     
     alfas = zeros(size(hs,1))
-    alfas[2:end-1] = shore_angle(XN,YN,dire[:,ti])
+    alfas[2:end-1] = shore_angle(XN,YN,θe[:,ti])
     alfas[1] = alfas[2]; alfas[end] = alfas[end-1]; # # ghost condition for the relative angle()
     
-    hb[:,ti], dirb[:,ti], depthb[:,ti] .= BreakingPropagation(hs[:,ti],tp[:,ti],dire[:,ti],depth,alfas .- angulo_rel, "spectral")
+    hb[:,ti], θb[:,ti], depthb[:,ti] .= BreakingPropagation(hs[:,ti],tp[:,ti],θe[:,ti],depth,alfas .- angulo_rel, "spectral")
 
     # println(hb[1,ti])
     #modificado LFP
@@ -287,7 +285,7 @@ function residualL(ynew,y,dt,dx,ti,hs,tp,dire,depth,hb,dirb,depthb,q,doc,kal,X0,
     
     dc = 0.5.*(doc[2:end,ti-1:ti+1]+doc[1:end-1,ti-1:ti+1]); # # trapezoidal rule for the closure depth in m+1/2
 
-    q[:,ti], _ = ALST(hb[:,ti],dirb[:,ti],depthb[:,ti],alfas .- angulo_rel,kal) # # for Tairua is -90 according to how the reference system was defined
+    q[:,ti], _ = ALST(hb[:,ti],θb[:,ti],depthb[:,ti],alfas .- angulo_rel,kal) # # for Tairua is -90 according to how the reference system was defined
 
     if bctype == "Dirichlet"
         q[1,ti] = 0
