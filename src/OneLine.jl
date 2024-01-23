@@ -108,15 +108,16 @@ function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, θ::Matri
 
 
         if pos % 100 == 0
+            elp_t = (now() - time_init).value
             @printf("\n Progress of %.2f %% - ",pos/(nti-1) .* 100)
-            @printf("Average time per step: %.2f [ms] - ",((now()-time_init).value/pos))
-            @printf("Estimated time to finish: %.2f [s] - ",((now()-time_init).value/1000/pos)*(nti-pos))
-            @printf("\n Elapsed time: %.2f [s]",now()-time_init)
+            @printf("Average time per step: %.2f [ms] - ",(elp_t/pos))
+            @printf("Estimated time to finish: %.2f [s] - ",(elp_t/1000/pos)*(nti-pos))
+            @printf("\n Elapsed time: %.2f [s]", elp_t)
         end
     end
-    elapsed_time = now() - time_init
+
     println("***********************End of simulation***********************")
-    @printf("\n\n Elapsed simulation time: %.2f seconds",elapsed_time.value/1000)
+    @printf("\n\n Elapsed simulation time: %.2f seconds",(now() - time_init).value/1000)
 
     return ysol, q
 end
