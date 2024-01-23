@@ -115,10 +115,13 @@ function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, θ::Matri
             @printf("Elapsed time: %.2f [s]", elp_t/1000)
         end
     end
-
+    
+    println("\n***************************************************************")
     println("***********************End of simulation***********************")
-    @printf("\n\n Elapsed simulation time: %.2f seconds",(now() - time_init).value/1000)
-
+    println("***************************************************************")
+    @printf("\n***********Elapsed simulation time: %.2f seconds***********\n",(now() - time_init).value/1000)
+    println("***************************************************************")
+    
     return ysol, q
 end
 
