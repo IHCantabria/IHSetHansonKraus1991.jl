@@ -273,7 +273,7 @@ function cal_OneLine()
 
     println("Unpacking datasets...")
 
-    dt, dx, bctype, MetObj = ncread(configF, "dt"), ncread(configF, "dx"), ncread(configF, "bctype"), ncread(configF, "MetObj")
+    dt, dx, bctype, MetObj = ncread(configF, "dt")[1], ncread(configF, "dx")[1], ncread(configF, "bctype")[1], ncread(configF, "MetObj")[1]
 
     Y0 = ncread(trsF, "Y0")
     X0 = ncread(trsF, "X0")
