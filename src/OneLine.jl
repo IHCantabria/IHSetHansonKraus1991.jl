@@ -322,7 +322,7 @@ function cal_OneLine()
     function Calibra_(Χ)
         kal = fill(exp(Χ[1]), size(Hs,1))
         Ymd = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, kal, X0, Y0, phi, bctype)
-        YYsl = Ymd[idx_obs,:]
+        YYsl = Ymd[:,idx_obs]
         if MetObj == "Pearson"
             rp = zeros(size(YYsl,2))
             for i in eachcol(YYsl)
