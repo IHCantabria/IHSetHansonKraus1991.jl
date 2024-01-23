@@ -107,19 +107,19 @@ function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, θ::Matri
         p2=p2+1
 
 
-        if pos % 100 == 0
+        if pos % 1000 == 0
             elp_t = (now() - time_init).value
             @printf("\n Progress of %.2f %% - ",pos/(nti-1) .* 100)
             @printf("Average time per step: %.2f [ms] - ",(elp_t/pos))
-            @printf("Estimated time to finish: %.2f [s] - ",(elp_t/1000/pos)*(nti-pos))
+            @printf("Estimated time to finish: %.2f [s] - ",(elp_t/1000/pos)*(nti-2-pos))
             @printf("Elapsed time: %.2f [s]", elp_t/1000)
         end
     end
     
     println("\n***************************************************************")
-    println("***********************End of simulation***********************")
+    println("End of simulation")
     println("***************************************************************")
-    @printf("\n***********Elapsed simulation time: %.2f seconds***********\n",(now() - time_init).value/1000)
+    @printf("\nElapsed simulation time: %.2f seconds \n",(now() - time_init).value/1000)
     println("***************************************************************")
     
     return ysol, q
@@ -329,6 +329,8 @@ function cal_OneLine()
 
     ##########START HERE#############
 
+    time_start = now()
+
     println("Starting COCOONED - Longshore Only...")
 
     function Calibra_(Χ)
@@ -451,6 +453,16 @@ function cal_OneLine()
 
     XN,YN = abs_pos(X0, Y0, deg2rad.(phi), yi)
 
+    total_time = (now() - time_init).value/1000
+    minutes = floor(total_time/60)
+    seconds = total_time - minutes*60
+
+    println("\n****************************************************************")
+    println("End of Calibration")
+    println("***************************************************************")
+    @printf("\nElapsed calibration time: %.0f min and %.2f\n", minutes, seconds)
+    println("****************************************************************")
+
     println("\n\n****************Writing output****************\n\n")
 
     year_atts = Dict("long_name" => "Year")
@@ -458,7 +470,6 @@ function cal_OneLine()
     day_atts = Dict("long_name" => "Day")
     hour_atts = Dict("long_name" => "Hour")
     trs_atts = Dict("long_name" => "Transect number")
-    println("Writing output...")
 
     output = wrkDir*"/results/Shoreline_HansonKraus1989.nc"
     nccreate(output, "year",
