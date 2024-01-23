@@ -289,7 +289,6 @@ function cal_OneLine()
 
     dt, dx, bctype, MetObj = ncread(configF, "dt"), ncread(configF, "dx"), ncread(configF, "bctype"), ncread(configF, "MetObj")
 
-    kal = ncread(parF, "kal")
     Y0 = ncread(trsF, "Y0")
     X0 = ncread(trsF, "X0")
     Yf = ncread(trsF, "Yf")
