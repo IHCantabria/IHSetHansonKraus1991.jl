@@ -119,7 +119,7 @@ function ydir_L(y,dt,dx,ti,hs,tp,θe,depth,hb,θb,depthb,q,doc,kal,X0, Y0, phi, 
     
     alfas = zeros(size(hs,1))
     alfas[2:end-1] = shore_angle(XN,YN,θe[:,ti])
-    # alfas = GM.cartesianDir2nauticalDir(alfas)
+    # alfas = cartesianDir2nauticalDir(alfas)
     alfas[1] = alfas[2]; alfas[end] = alfas[end-1]; # # ghost condition for the relative angle()
     
     # println(alfas)
