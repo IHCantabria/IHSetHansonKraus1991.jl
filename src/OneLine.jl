@@ -112,7 +112,7 @@ function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, θ::Matri
             @printf("\n Progress of %.2f %% - ",pos/(nti-1) .* 100)
             @printf("Average time per step: %.2f [ms] - ",(elp_t/pos))
             @printf("Estimated time to finish: %.2f [s] - ",(elp_t/1000/pos)*(nti-pos))
-            @printf("\n Elapsed time: %.2f [s]", elp_t)
+            @printf("Elapsed time: %.2f [s]", elp_t)
         end
     end
 
