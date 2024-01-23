@@ -73,11 +73,11 @@ function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, θ::Matri
 
     # sedbgtal = zeros((n1, mt))
     # dQdx = zeros((n1, mt))
-    hb = convert(Array{Float64},zeros(n2, mt))
-    θb = convert(Array{Float64},zeros(n2, mt))
-    depthb = convert(Array{Float64},zeros(n2, mt))
-    q = convert(Array{Float64},zeros(n2, mt))
-    q0 = convert(Array{Float64},zeros(n2, mt))
+    hb = convert(Array{Float64}, zeros(n2, mt))
+    θb = convert(Array{Float64}, zeros(n2, mt))
+    depthb = convert(Array{Float64}, zeros(n2, mt))
+    q = convert(Array{Float64}, zeros(n2, mt))
+    q0 = convert(Array{Float64}, zeros(n2, mt))
     
     for pos = 1:(nti-2)
 
@@ -99,29 +99,15 @@ function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, θ::Matri
 
         # ynew = optimize.newton_krylov(resFun, ysol[:,ti-1] ; method="minres")
 
-        # lb = ysol[:,ti-1] .- 1
-        # ub = ysol[:,ti-1] .+ 1
-        
-        # ynew = nlboxsolve(resFun,ysol[:,ti-1],lb,ub, method= :jfnk, xtol=1e-1,ftol=1e-1).zero
-
-        # ynew[isnan.(ynew)] .= ysol[isnan.(ynew),ti-1]
         ysol[:,ti] = ynew
 
         p1=p1+1
         p2=p2+1
 
-        # hb[:,ti],θb[:,ti],depthb[:,ti], q[:,ti], sedbgtal[:,ti],
-        # dQdx[:,ti]= residualL_vol(ysol[:,ti],ysol[:,ti-1],dt,
-        # dx,tii,hs[:,p1:p2],tp[:,p1:p2],θ[:,p1:p2],depth,hb[:,p1:p2],θb[:,p1:p2],
-        # depthb[:,p1:p2],q[:,p1:p2],doc[:,p1:p2],kal, X0, Y0, phi,theta)
 
         if pos % 100 == 0
             @printf("\n Progress of %.2f %%",pos/(nti-1) .* 100)
         end
-        # println(pos)
-    #     #    res[pos+1,:], WAVEC.hb[pos+1,:], WAVEC.θb[pos+1,:], WAVEC.depthb[pos+1,:], q[pos+1,:], yeq[pos+1,:], CALP.AY0[pos+1,:], sedbgt[pos+1,:], sedbgtal[pos+1,:], sedbgtcr[pos+1,:], sedbgtbc[pos+1,:] = residual(ynew,y,dt,dx,pos+1,WAVEC,q,yeq,CNST,CALP,TRS,BDC,model,theta)
-    #     #    yold = y    
-        # tiempo_iter(pos)=toc
     end
 
     return ysol, q
@@ -335,7 +321,7 @@ function cal_OneLine()
 
     function Calibra_(Χ)
         Ymd = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, exp(Χ[1]), X0, Y0, phi, bctype)
-        YYsl = Ymd[:, idx_obs]
+        YYsl = Ymd[idx_obs,:]
         if MetObj == "Pearson"
             rp = zeros(size(YYsl,2))
             for i in eachcol(YYsl)
@@ -445,7 +431,7 @@ function cal_OneLine()
 
     Ymdr, q_tot = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, exp(poprΧ[1]), X0, Y0, phi, bctype)
 
-    Ysl = Ymdr[:,idx_obs]
+    Ysl = Ymdr[idx_obs,:]
     aRP = sum((Ysl.-mean(Ysl)).*(Y_obs .- mean(Y_obs)))/(std(Ysl)*std(Y_obs)*length(Ysl))
     aRMSE = sqrt(mean((Ysl .- Y_obs).^2))
     aMSS = 1 - sum((Ysl .- Y_obs).^2)/length(Ysl)/(var(Ysl)+var(Y_obs)+(mean(Ysl)-mean(Y_obs))^2)
