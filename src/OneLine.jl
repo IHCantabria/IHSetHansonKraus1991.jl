@@ -315,11 +315,11 @@ function cal_OneLine()
 
     ii =  t_obs .<= t_wav[end] .&& t_obs .>= t_wav[1]
 
-    t_obs, Y_obs = t_obs[:,ii], Y_obs[:,ii]
+    t_obs, Y_obs = t_obs[ii], Y_obs[:,ii]
 
     ii =  t_wav .<= t_obs[end] .&& t_wav .>= t_obs[1]
 
-    t_wav, Hs, Tp, θ = t_wav[:,ii], Hs[:,ii], Tp[:,ii], θ[:,ii]
+    t_wav, Hs, Tp, θ = t_wav[ii], Hs[:,ii], Tp[:,ii], θ[:,ii]
 
     idx_obs = zeros(length(t_obs))
 
