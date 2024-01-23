@@ -402,7 +402,7 @@ function cal_OneLine()
     PS = 10
     ME = 10
 
-    boundsr = [(0.5, 100)]
+    boundsr = [(1e-2, 5)]
 
     if MetObj == "Double" || MetObj == "Double2" || MetObj == "Double3"
         resr = bboptimize(Calibra_; 
