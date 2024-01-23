@@ -79,6 +79,8 @@ function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, θ::Matri
     q = convert(Array{Float64}, zeros(n2, mt))
     q0 = convert(Array{Float64}, zeros(n2, mt))
     
+
+    time_init = now()
     for pos = 1:(nti-2)
 
         ti = pos+desl
@@ -106,9 +108,15 @@ function OneLine(yi, dt, dx, hs::Matrix{Float64}, tp::Matrix{Float64}, θ::Matri
 
 
         if pos % 100 == 0
-            @printf("\n Progress of %.2f %%",pos/(nti-1) .* 100)
+            @printf("\n Progress of %.2f %% - ",pos/(nti-1) .* 100)
+            @printf("Average time per step: %.2f [ms] - ",((now()-time_init)/pos))
+            @printf("Estimated time to finish: %.2f [s] - ",((now()-time_init)/1000/pos)*(nti-pos))
+            @printf("\n Elapsed time: %.2f [s]",now()-time_init)
         end
     end
+    elapsed_time = now() - time_init
+    println("***********************End of simulation***********************")
+    @printf("\n\n Elapsed simulation time: %.2f seconds",elapsed_time.value/1000)
 
     return ysol, q
 end
@@ -321,7 +329,7 @@ function cal_OneLine()
 
     function Calibra_(Χ)
         kal = fill(exp(Χ[1]), size(Hs,1))
-        Ymd = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, kal, X0, Y0, phi, bctype)
+        Ymd, _ = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, kal, X0, Y0, phi, bctype)
         YYsl = Ymd[:,idx_obs]
         if MetObj == "Pearson"
             rp = zeros(size(YYsl,2))
@@ -500,19 +508,19 @@ function cal_OneLine()
 
 
     nccreate(output, "Y",
-                "dim", (length(YY), length(X0)),
+                "dim", (length(X0), length(YY)),
                 atts = Y_atts)
     ncwrite(Ymdr, output, "Y")
     nccreate(output, "XN",
-                "dim", (length(YY), length(X0)),
+                "dim", (length(X0), length(YY)),
                 atts = XN_atts)
     ncwrite(XN, output, "XN")
     nccreate(output, "YN",
-                "dim", (length(YY), length(X0)),
+                "dim", (length(X0), length(YY)),
                 atts = YN_atts)
     ncwrite(YN, output, "YN")
     nccreate(output, "q_tot",
-                "dim", (length(YY), length(X0)),
+                "dim", (length(X0), length(YY)),
                 atts = q_tot_atts)
     ncwrite(q_tot, output, "q_tot")
     nccreate(output, "Yi",
