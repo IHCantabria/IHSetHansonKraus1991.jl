@@ -320,7 +320,8 @@ function cal_OneLine()
     println("Starting COCOONED - Longshore Only...")
 
     function Calibra_(Χ)
-        Ymd = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, exp(Χ[1]), X0, Y0, phi, bctype)
+        kal = repeat(exp(Χ[1]), size(Hs,1))
+        Ymd = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, kal, X0, Y0, phi, bctype)
         YYsl = Ymd[idx_obs,:]
         if MetObj == "Pearson"
             rp = zeros(size(YYsl,2))
