@@ -281,7 +281,7 @@ function cal_OneLine()
 
     wavF = dats*"wav.nc"
     ensF = dats*"ens.nc"
-    trsF = dats*"par.nc"
+    trsF = dats*"trs.nc"
     # slF = NCDataset(dats*"sl.nc")
     configF = dats*"config.nc"
 
