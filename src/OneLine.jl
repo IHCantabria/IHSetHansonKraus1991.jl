@@ -315,11 +315,11 @@ function cal_OneLine()
 
     ii =  t_obs .<= t_wav[end] .&& t_obs .>= t_wav[1]
 
-    t_obs, Y_obs = t_obs[ii], Y_obs[ii]
+    t_obs, Y_obs = t_obs[:,ii], Y_obs[:,ii]
 
     ii =  t_wav .<= t_obs[end] .&& t_wav .>= t_obs[1]
 
-    t_wav, Hs, Tp, θ = t_wav[ii], Hs[ii, :], Tp[ii, :], θ[ii, :]
+    t_wav, Hs, Tp, θ = t_wav[:,ii], Hs[:,ii], Tp[:,ii], θ[:,ii]
 
     idx_obs = zeros(length(t_obs))
 
@@ -335,7 +335,7 @@ function cal_OneLine()
 
     function Calibra_(Χ)
         Ymd = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, exp(Χ[1]), X0, Y0, phi, bctype)
-        YYsl = Ymd[idx_obs, :]
+        YYsl = Ymd[:, idx_obs]
         if MetObj == "Pearson"
             rp = zeros(size(YYsl,2))
             for i in eachcol(YYsl)
@@ -445,7 +445,7 @@ function cal_OneLine()
 
     Ymdr, q_tot = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, exp(poprΧ[1]), X0, Y0, phi, bctype)
 
-    Ysl = Ymdr[idx_obs]
+    Ysl = Ymdr[:,idx_obs]
     aRP = sum((Ysl.-mean(Ysl)).*(Y_obs .- mean(Y_obs)))/(std(Ysl)*std(Y_obs)*length(Ysl))
     aRMSE = sqrt(mean((Ysl .- Y_obs).^2))
     aMSS = 1 - sum((Ysl .- Y_obs).^2)/length(Ysl)/(var(Ysl)+var(Y_obs)+(mean(Ysl)-mean(Y_obs))^2)
