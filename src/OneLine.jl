@@ -334,7 +334,8 @@ function cal_OneLine()
     println("Starting COCOONED - Longshore Only...")
 
     function Calibra_(Χ)
-        kal = fill(exp(Χ[1]), size(Hs,1))
+        # kal = fill(exp(Χ[1]), size(Hs,1))
+        kal = fill(Χ[1], size(Hs,1))
         Ymd, _ = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, kal, X0, Y0, phi, bctype)
         YYsl = Ymd[:,idx_obs]
         if MetObj == "Pearson"
@@ -398,15 +399,18 @@ function cal_OneLine()
         end
     end
 
-    boundsr = [(log(1e-5), log(1e-1))]
+    PS = 10
+    ME = 10
+
+    boundsr = [(0.5, 100)]
 
     if MetObj == "Double" || MetObj == "Double2" || MetObj == "Double3"
         resr = bboptimize(Calibra_; 
                         # Method = :simultaneous_perturbation_stochastic_approximation,
                         SearchRange = boundsr,
                         NumDimensions = 1,
-                        PopulationSize = 50,
-                        MaxSteps = 500,
+                        PopulationSize = PS,
+                        MaxSteps = ME,
                         FitnessTolerance = 1e-6,
                         FitnessScheme=ParetoFitnessScheme{2}(is_minimizing=true),
                         TraceMode=:compact,
@@ -419,8 +423,8 @@ function cal_OneLine()
                         # Method = :simultaneous_perturbation_stochastic_approximation,
                         SearchRange = boundsr,
                         NumDimensions = 1,
-                        PopulationSize = 50,
-                        MaxSteps = 500,
+                        PopulationSize = PS,
+                        MaxSteps = ME,
                         FitnessTolerance = 1e-6,
                         FitnessScheme=ParetoFitnessScheme{3}(is_minimizing=true),
                         TraceMode=:compact,
@@ -433,8 +437,8 @@ function cal_OneLine()
                         Method = :adaptive_de_rand_1_bin,
                         SearchRange = boundsr,
                         NumDimensions = 1,
-                        PopulationSize = 50,
-                        MaxSteps = 500,
+                        PopulationSize = PS,
+                        MaxSteps = ME,
                         FitnessTolerance = 1e-6,
                         TraceMode=:compact,
                         ϵ=0.1,
@@ -545,7 +549,8 @@ function cal_OneLine()
     nccreate(output, "K",
                 "len", 1,
                 atts = K_atts)
-    ncwrite([exp(popr[1])], output, "K")
+    # ncwrite([exp(popr[1])], output, "K")
+    ncwrite([popr[1]], output, "K")
     nccreate(output, "RP",
                 "len", 1,
                 atts = RP_atts)
