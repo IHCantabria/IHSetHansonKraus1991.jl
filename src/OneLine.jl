@@ -337,32 +337,32 @@ function cal_OneLine()
         YYsl = Ymd[:,idx_obs]
         if MetObj == "Pearson"
             rp = zeros(size(YYsl,2))
-            for i in eachcol(YYsl)
+            for i in keys(YYsl[1,:])
                 rp[i] = 1 -  abs(sum((YYsl[:,i].-mean(YYsl[:,i])).*(Y_obs[:,i] .- mean(Y_obs[:,i])))/(std(YYsl[:,i])*std(Y_obs[:,i])*length(YYsl[:,i])))
             end
             return mean(rp)
         elseif MetObj == "RMSE"
             rmse = zeros(size(YYsl,2))
-            for i in eachcol(YYsl)
+            for i in keys(YYsl[1,:])
                 rmse[i] = abs(sqrt(mean((YYsl[:,i] .- Y_obs[:,i]).^2))/5)
             end
             return mean(rmse)
         elseif MetObj == "MSS"
             mss = zeros(size(YYsl,2))
-            for i in eachcol(YYsl)
+            for i in keys(YYsl[1,:])
                 mss[i] = sum((YYsl[:,i] .- Y_obs[:,i]).^2)/length(YYsl[:,i])/(var(YYsl[:,i])+var(Y_obs[:,i])+(mean(YYsl[:,i])-mean(Y_obs[:,i]))^2)
             end
             return mean(mss)
         elseif MetObj == "BSS"
             bss = zeros(size(YYsl,2))
-            for i in eachcol(YYsl)
+            for i in keys(YYsl[1,:])
                 bss[i] = (mean((YYsl[:,i] .- Y_obs[:,i]).^2) - mean((YYref[:,i] .- Y_obs[:,i]).^2))/mean((YYref[:,i] .- Y_obs[:,i]).^2)
             end
             return mean(bss)
         elseif MetObj == "Double"
             mss = zeros(size(YYsl,2))
             rmse = zeros(size(YYsl,2))
-            for i in eachcol(YYsl)
+            for i in keys(YYsl[1,:])
                 mss[i] = sum((YYsl[:,i] .- Y_obs[:,i]).^2)/length(YYsl[:,i])/(var(YYsl[:,i])+var(Y_obs[:,i])+(mean(YYsl[:,i])-mean(Y_obs[:,i]))^2)
                 rmse[i] = abs(sqrt(mean((YYsl[:,i] .- Y_obs[:,i]).^2))/5)
             end
@@ -371,7 +371,7 @@ function cal_OneLine()
             mss = zeros(size(YYsl,2))
             rmse = zeros(size(YYsl,2))
             rp = zeros(size(YYsl,2))
-            for i in eachcol(YYsl)
+            for i in keys(YYsl[1,:])
                 mss[i] = sum((YYsl[:,i] .- Y_obs[:,i]).^2)/length(YYsl[:,i])/(var(YYsl[:,i])+var(Y_obs[:,i])+(mean(YYsl[:,i])-mean(Y_obs[:,i]))^2)
                 rmse[i] = abs(sqrt(mean((YYsl[:,i] .- Y_obs[:,i]).^2))/5)
                 rp[i] = 1 -  abs(sum((YYsl[:,i].-mean(YYsl[:,i])).*(Y_obs[:,i] .- mean(Y_obs[:,i])))/(std(YYsl[:,i])*std(Y_obs[:,i])*length(YYsl[:,i])))
@@ -380,7 +380,7 @@ function cal_OneLine()
         elseif MetObj == "Double2"
             mss = zeros(size(YYsl,2))
             rp = zeros(size(YYsl,2))
-            for i in eachcol(YYsl)
+            for i in keys(YYsl[1,:])
                 mss[i] = sum((YYsl[:,i] .- Y_obs[:,i]).^2)/length(YYsl[:,i])/(var(YYsl[:,i])+var(Y_obs[:,i])+(mean(YYsl[:,i])-mean(Y_obs[:,i]))^2)
                 rp[i] = 1 -  abs(sum((YYsl[:,i].-mean(YYsl[:,i])).*(Y_obs[:,i] .- mean(Y_obs[:,i])))/(std(YYsl[:,i])*std(Y_obs[:,i])*length(YYsl[:,i])))
             end
@@ -388,7 +388,7 @@ function cal_OneLine()
         elseif MetObj == "Double3"
             rmse = zeros(size(YYsl,2))
             rp = zeros(size(YYsl,2))
-            for i in eachcol(YYsl)
+            for i in keys(YYsl[1,:])
                 rmse[i] = abs(sqrt(mean((YYsl[:,i] .- Y_obs[:,i]).^2))/5)
                 rp[i] = 1 -  abs(sum((YYsl[:,i].-mean(YYsl[:,i])).*(Y_obs[:,i] .- mean(Y_obs[:,i])))/(std(YYsl[:,i])*std(Y_obs[:,i])*length(YYsl[:,i])))
             end
