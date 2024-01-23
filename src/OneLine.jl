@@ -156,7 +156,7 @@ function ydir_L(y,dt,dx,ti,hs,tp,θe,depth,hb,θb,depthb,q,doc,kal,X0, Y0, phi, 
     
     dc = 0.5.*(doc[2:end,ti-1:ti+1]+doc[1:end-1,ti-1:ti+1]); # # trapezoidal rule for the closure depth in m+1/2
 
-    q[:,ti], q0 = ALST(hb[:,ti], Tp[:,ti],θb[:,ti], depthb[:,ti], alfas.+ 90, kal) # # for Tairua is -90 according to how the reference system was defined
+    q[:,ti], q0 = ALST(hb[:,ti], tp[:,ti],θb[:,ti], depthb[:,ti], alfas.+ 90, kal) # # for Tairua is -90 according to how the reference system was defined
     if bctype == "Dirichlet"
         q[1,ti] = 0
         q[end,ti] = 0
