@@ -468,7 +468,7 @@ function cal_OneLine()
 
     XN,YN = abs_pos(X0, Y0, deg2rad.(phi), yi)
 
-    total_time = (now() - time_init).value/1000
+    total_time = (now() - time_start).value/1000
     minutes = floor(total_time/60)
     seconds = total_time - minutes*60
 
