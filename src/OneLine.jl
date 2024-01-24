@@ -187,7 +187,7 @@ function residualL(ynew,y,dt,dx,ti,hs,tp,θe,depth,hb,θb,depthb,q,doc,kal,X0, Y
     
     hb[:,ti], θb[:,ti], depthb[:,ti] .= BreakingPropagation(hs[:,ti],tp[:,ti],θe[:,ti],depth,alfas .- angulo_rel, "spectral")
 
-    
+
     # println(hb[1,ti])
     #modificado LFP
     # 
@@ -449,7 +449,7 @@ function cal_OneLine()
 
     popr = best_candidate(resr)
 
-    Ymdr, q_tot = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, exp(popr[1]), X0, Y0, phi, bctype)
+    Ymdr, q_tot = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, fill(popr[1], size(yi)), X0, Y0, phi, bctype)
 
     Ysl = Ymdr[idx_obs,:]
     aRP = sum((Ysl.-mean(Ysl)).*(Y_obs .- mean(Y_obs)))/(std(Ysl)*std(Y_obs)*length(Ysl))
