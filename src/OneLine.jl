@@ -448,7 +448,7 @@ function cal_OneLine()
 
     popr = best_candidate(resr)
 
-    Ymdr, q_tot = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, exp(poprΧ[1]), X0, Y0, phi, bctype)
+    Ymdr, q_tot = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, exp(popr[1]), X0, Y0, phi, bctype)
 
     Ysl = Ymdr[idx_obs,:]
     aRP = sum((Ysl.-mean(Ysl)).*(Y_obs .- mean(Y_obs)))/(std(Ysl)*std(Y_obs)*length(Ysl))
