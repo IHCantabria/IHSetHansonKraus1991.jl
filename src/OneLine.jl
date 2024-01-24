@@ -451,10 +451,20 @@ function cal_OneLine()
 
     Ymdr, q_tot = OneLine(yi, dt, dx, Hs, Tp, θ, depth, doc, fill(popr[1], size(Hs, 1)), X0, Y0, phi, bctype)
 
-    Ysl = Ymdr[idx_obs,:]
-    aRP = sum((Ysl.-mean(Ysl)).*(Y_obs .- mean(Y_obs)))/(std(Ysl)*std(Y_obs)*length(Ysl))
-    aRMSE = sqrt(mean((Ysl .- Y_obs).^2))
-    aMSS = 1 - sum((Ysl .- Y_obs).^2)/length(Ysl)/(var(Ysl)+var(Y_obs)+(mean(Ysl)-mean(Y_obs))^2)
+    Ysl = Ymdr[:, idx_obs]
+    aRP = zeros(size(Ysl,2))
+    aRMSE = zeros(size(Ysl,2))
+    aMSS = zeros(size(Ysl,2))
+
+    for i in keys(Ysl[1,:])
+        aRP[i] = 1 -  abs(sum((Ysl[:,i].-mean(Ysl[:,i])).*(Y_obs[:,i] .- mean(Y_obs[:,i])))/(std(Ysl[:,i])*std(Y_obs[:,i])*length(Ysl[:,i])))
+        aRMSE[i] = abs(sqrt(mean((Ysl[:,i] .- Y_obs[:,i]).^2))/5)
+        aMSS[i] = sum((Ysl[:,i] .- Y_obs[:,i]).^2)/length(Ysl[:,i])/(var(Ysl[:,i])+var(Y_obs[:,i])+(mean(Ysl[:,i])-mean(Y_obs[:,i]))^2)
+    end
+
+    aRP = mean(aRP)
+    aRMSE = mean(aRMSE)
+    aMSS = mean(aMSS)
 
     XN,YN = abs_pos(X0, Y0, deg2rad.(phi), yi)
 
