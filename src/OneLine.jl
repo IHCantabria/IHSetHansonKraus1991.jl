@@ -506,7 +506,7 @@ function cal_OneLine()
     nccreate(output, "trs",
                 "dim", length(X0),
                 atts = trs_atts)
-    ncwrite(1:length(X0), output, "trs")
+    ncwrite(X0, output, "trs")
 
     Y_atts = Dict("units" => "m",
         "long_name" => "Shoreline position",
