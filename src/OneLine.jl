@@ -187,6 +187,7 @@ function residualL(ynew,y,dt,dx,ti,hs,tp,θe,depth,hb,θb,depthb,q,doc,kal,X0, Y
     
     hb[:,ti], θb[:,ti], depthb[:,ti] .= BreakingPropagation(hs[:,ti],tp[:,ti],θe[:,ti],depth,alfas .- angulo_rel, "spectral")
 
+    
     # println(hb[1,ti])
     #modificado LFP
     # 
