@@ -538,7 +538,8 @@ function cal_OneLine()
 
 
     nccreate(output, "Y",
-                "dim", length(X0),
+                "dim1", length(X0),
+                "dim2", length(YY),
                 atts = Y_atts)
     ncwrite(Ymdr, output, "Y")
     nccreate(output, "XN",
