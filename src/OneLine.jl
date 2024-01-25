@@ -147,7 +147,7 @@ function ydir_L(y,dt,dx,ti,hs,tp,θe,depth,hb,θb,depthb,q,doc,kal,X0, Y0, phi, 
         # println("\n")
         # println(dire[:,ti])
         # println("\n") 
-        println("\n Waves diverged -- Q_tot = 0")     
+        println("Waves diverged -- Q_tot = 0")     
     end
     # println(hb[1,ti])
     #modificado LFP
@@ -538,7 +538,7 @@ function cal_OneLine()
 
 
     nccreate(output, "Y",
-                "dim", length(YY),
+                "dim", length(X0),
                 atts = Y_atts)
     ncwrite(Ymdr, output, "Y")
     nccreate(output, "XN",
