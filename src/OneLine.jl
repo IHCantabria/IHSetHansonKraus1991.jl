@@ -543,15 +543,18 @@ function cal_OneLine()
                 atts = Y_atts)
     ncwrite(Ymdr, output, "Y")
     nccreate(output, "XN",
-                "dim", (length(X0), length(YY)),
+                "dim1", length(X0),
+                "dim2", length(YY),
                 atts = XN_atts)
     ncwrite(XN, output, "XN")
     nccreate(output, "YN",
-                "dim", (length(X0), length(YY)),
+                "dim1", length(X0),
+                "dim2", length(YY),
                 atts = YN_atts)
     ncwrite(YN, output, "YN")
     nccreate(output, "q_tot",
-                "dim", (length(X0), length(YY)),
+                "dim1", length(X0),
+                "dim2", length(YY),
                 atts = q_tot_atts)
     ncwrite(q_tot, output, "q_tot")
     nccreate(output, "Yi",
