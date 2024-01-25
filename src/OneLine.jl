@@ -466,7 +466,12 @@ function cal_OneLine()
     aRMSE = mean(aRMSE)
     aMSS = mean(aMSS)
 
-    XN,YN = abs_pos(X0, Y0, deg2rad.(phi), Ymdr)
+    XN = zeros(size(Ymdr,1), size(Ymdr,2))
+    YN = zeros(size(Ymdr,1), size(Ymdr,2))
+    for i in 1:size(Ymdr,2)
+        XN[:,i], YN[:,i] = abs_pos(X0, Y0, deg2rad.(phi), Ymdr[:,i])
+    end
+    # XN,YN = abs_pos(X0, Y0, deg2rad.(phi), Ymdr)
 
     total_time = (now() - time_start).value/1000
     minutes = floor(total_time/60)
