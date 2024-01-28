@@ -508,10 +508,15 @@ function cal_OneLine()
                 "dim", length(HH),
                 atts = hour_atts)
     ncwrite(HH, output, "hour")  
-    nccreate(output, "trs",
+    nccreate(output, "trs_X0",
                 "dim", length(X0),
                 atts = trs_atts)
-    ncwrite(X0, output, "trs")
+    ncwrite(X0, output, "trs_X0")
+    nccreate (output,  "trs_Y0",
+                "dim", length(Y0),
+                atts = trs_atts)
+    ncwrite(Y0, output, "trs_Y0")
+    
 
     Y_atts = Dict("units" => "m",
         "long_name" => "Shoreline position",
@@ -558,7 +563,7 @@ function cal_OneLine()
                 atts = YN_atts)
     ncwrite(YN, output, "YN")
     nccreate(output, "q_tot",
-                "dim1", length(X0),
+                "dim1", length(X0)+1,
                 "dim2", length(YY),
                 atts = q_tot_atts)
     ncwrite(q_tot, output, "q_tot")
