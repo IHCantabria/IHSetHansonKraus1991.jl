@@ -562,11 +562,11 @@ function cal_OneLine()
                 "dim2", length(YY),
                 atts = YN_atts)
     ncwrite(YN, output, "YN")
-    nccreate(output, "q_tot",
-                "dim1", length(X0)+1,
-                "dim2", length(YY),
-                atts = q_tot_atts)
-    ncwrite(q_tot, output, "q_tot")
+    # nccreate(output, "q_tot",
+    #             "dim1", length(X0)+1,
+    #             "dim2", length(YY),
+    #             atts = q_tot_atts)
+    # ncwrite(q_tot, output, "q_tot")
     nccreate(output, "Yi",
                 "len", 1,
                 atts = Yi_atts)
