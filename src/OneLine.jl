@@ -482,7 +482,6 @@ function cal_OneLine()
     println("***************************************************************")
     @printf("\nElapsed calibration time: %.0f min and %.2f\n", minutes, seconds)
     println("****************************************************************")
-
     println("\n\n****************Writing output****************\n\n")
 
     year_atts = Dict("long_name" => "Year")
